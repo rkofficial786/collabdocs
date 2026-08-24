@@ -26,6 +26,7 @@ The login page has one-click buttons for each of these so reviewers don't need t
 - **Command palette (⌘K / Ctrl+K)** — jump to any document or create a new one from anywhere in the app without touching the mouse.
 - **Document icons** — pick an emoji per document (Notion-style); it shows in the sidebar, dashboard cards, and command palette.
 - **Starring/favorites** — pin documents you care about; they surface in their own section on the dashboard and sidebar.
+- **Version history** — checkpoints are saved automatically as you edit; open the history panel to see past versions with author and timestamp, and restore any of them (restoring itself is undoable — it snapshots your current content first).
 - **Dark mode** — a real second theme (not just inverted colors), toggle persists across sessions.
 - **Persistent sidebar app shell** — every document you own or have access to, searchable, with a mobile-responsive drawer.
 - **File import** — upload a `.txt`, `.md`/`.markdown`, or `.docx` file and it becomes a new editable document, imported through the same schema the editor renders. Unsupported types are rejected with a clear error. 4MB upload limit.

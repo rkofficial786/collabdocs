@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getDocumentWithRole, canEdit } from "@/lib/access";
 import { updateDocumentSchema } from "@/lib/validation";
+import { maybeSnapshotVersion } from "@/lib/versions";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -40,6 +41,12 @@ export async function PATCH(request: Request, { params }: Params) {
   const parsed = updateDocumentSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });
+  }
+
+  // Snapshot the document as it was *before* this save, so version history
+  // reflects checkpoints of past content rather than the incoming change.
+  if (parsed.data.content !== undefined) {
+    await maybeSnapshotVersion(result.document, session.user.id);
   }
 
   const document = await db.document.update({

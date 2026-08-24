@@ -6,6 +6,7 @@ import { DocumentIcon } from "@/components/DocumentIcon";
 import { DocumentTitle } from "@/components/DocumentTitle";
 import { ShareDialog } from "@/components/ShareDialog";
 import { StarToggle } from "@/components/StarToggle";
+import { VersionHistory } from "@/components/VersionHistory";
 import { Editor } from "@/components/Editor";
 import { Badge } from "@/components/ui/badge";
 import type { JSONContent } from "@tiptap/react";
@@ -39,6 +40,7 @@ export default async function DocumentPage({ params }: PageProps<"/doc/[id]">) {
             </Badge>
           )}
           <StarToggle documentId={document.id} starred={starred} />
+          <VersionHistory documentId={document.id} editable={editable} />
           {role === "owner" && (
             <ShareDialog
               documentId={document.id}

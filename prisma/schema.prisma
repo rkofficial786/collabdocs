@@ -17,6 +17,7 @@ model User {
   ownedDocuments Document[]      @relation("OwnedDocuments")
   shares         DocumentShare[]
   stars          Star[]
+  versions       DocumentVersion[]
 }
 
 model Document {
@@ -28,10 +29,24 @@ model Document {
   owner     User     @relation("OwnedDocuments", fields: [ownerId], references: [id], onDelete: Cascade)
   shares    DocumentShare[]
   stars     Star[]
+  versions  DocumentVersion[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([ownerId])
+}
+
+model DocumentVersion {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  title      String
+  content    Json
+  authorId   String?
+  author     User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  createdAt  DateTime @default(now())
+
+  @@index([documentId, createdAt])
 }
 
 model Star {

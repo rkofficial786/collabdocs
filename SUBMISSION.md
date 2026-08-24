@@ -21,6 +21,7 @@
 - Create a blank document; rename it; pick an emoji icon for it; star/unstar it
 - Edit with bold/italic/underline/headings/bulleted & numbered lists/quotes — via the top toolbar, a floating selection toolbar, or `/` slash commands; autosave with a visible save-status indicator; live word/character count; content persists across reload
 - Dark mode, toggle persists across sessions
+- Version history — automatic checkpoints while editing, restore any past version (with its own undo, since restoring snapshots the current state first)
 - Import a `.txt`, `.md`, or `.docx` file as a new document; unsupported types are rejected with a clear error
 - Share a document with another user by email, at **view** or **edit** permission; revoke access; the dashboard visually separates owned vs. shared documents and shows the permission level, with a dedicated "Starred" section
 - Viewers get a genuinely read-only editor (no toolbar, no bubble menu, disabled title, non-editable content) — enforced server-side on every request, not just hidden in the UI

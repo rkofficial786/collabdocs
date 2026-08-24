@@ -77,7 +77,7 @@ export function DocumentCard({
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--accent-soft)] text-lg text-[var(--accent-hover)]">
           {icon ?? <FileText className="h-4.5 w-4.5" />}
         </div>
-        <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 data-[active=true]:opacity-100" data-active={starred}>
+        <div className="flex items-center gap-0.5">
           <button
             type="button"
             onClick={toggleStar}
@@ -93,7 +93,7 @@ export function DocumentCard({
             <DropdownMenu>
               <DropdownMenuTrigger
                 onClick={(e) => e.preventDefault()}
-                className="rounded-md p-1.5 text-[var(--muted-2)] outline-none transition-colors hover:bg-black/5 hover:text-[var(--foreground)] data-[state=open]:opacity-100"
+                className="rounded-md p-1.5 text-[var(--muted-2)] outline-none transition-colors hover:bg-black/5 hover:text-[var(--foreground)]"
               >
                 <MoreHorizontal className="h-4 w-4" />
               </DropdownMenuTrigger>

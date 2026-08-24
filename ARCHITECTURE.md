@@ -38,17 +38,21 @@ Inside the editor itself, three Tiptap pieces work together: a `BubbleMenu` (fro
 
 Document icons (an emoji per document, `Document.icon`) and starring (`Star`, a `(documentId, userId)` join table separate from `DocumentShare` because "I starred this" and "I have access to this" are unrelated facts) both round-trip through the same optimistic-update-then-`router.refresh()` pattern already used for rename/delete, so there's one mutation idiom across the app rather than a special case per feature.
 
+## Version history
+
+`DocumentVersion` stores full content snapshots (`documentId, title, content, authorId, createdAt`), not diffs — simplest possible model, and at this scale (a handful of documents, not a wiki with millions of edits) storage cost is a non-issue. The interesting decision is *when* to snapshot: creating one on every autosave (every ~700ms of typing pauses) would flood the history with noise, so `maybeSnapshotVersion` (`src/lib/versions.ts`) snapshots the document's state **right before** an incoming content update is applied, and only if the most recent snapshot is more than 3 minutes old (or none exists yet) — the result reads like meaningful checkpoints ("here's what it looked like 20 minutes ago"), not a keystroke log. Restoring a version always force-snapshots the *current* content first, bypassing the throttle, specifically so restoring is itself undoable — you can never lose work by restoring the wrong thing. The restore-history dialog fetches on open rather than being preloaded with the page, since most edit sessions never open it.
+
 ## What I prioritized, and why
 
 Given the 4–6 hour box, I spent the time on the things a reviewer can actually *feel*: an editor that behaves like a real editor (not a `<textarea>` with buttons), a sharing flow with real permission enforcement (not just a UI toggle), and file import that produces genuinely well-formatted documents rather than a wall of unstyled text. I deliberately did **not** build:
 
 - Real-time multi-user collaboration (Yjs/CRDT) — huge scope for a feature the brief explicitly lists as optional stretch.
-- Comments/suggestions, version history, PDF export — same reasoning; each is a separate, non-trivial feature.
+- Comments/suggestions, PDF export — same reasoning; each is a separate, non-trivial feature.
 - An org/team/roles model — every user is a flat peer; sharing is per-document per-user, which is all the brief asks for.
 
 ## What I'd build next with 2–4 more hours
 
 1. **Real-time presence + basic conflict handling** — even without full CRDT collaboration, showing "Bob is viewing this doc" and doing an optimistic-lock check on save (reject/merge if the doc changed since you loaded it) would close the most visible gap versus Google Docs.
-2. **Document version history** — since content is already a JSON snapshot, storing periodic snapshots (or a diff on each save) is a natural next step and was explicitly called out as a stretch option.
+2. **Named/diffed versions** — the current version history snapshots full content on a time throttle; letting a user manually name a checkpoint ("Before the redesign") and showing a text diff between two versions instead of just an excerpt would make it much more useful for real editing sessions.
 3. **Attachments separate from import** — right now file upload always *becomes* a document; letting a user attach a file *to* an existing document (the other example in the brief) is a distinct, smaller feature I cut for time.
 4. **Rate limiting / stricter upload validation** (magic-byte sniffing instead of trusting the file extension) before this went anywhere near production traffic.
