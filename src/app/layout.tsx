@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
+import { ConfirmDialogProvider } from "@/components/ConfirmDialog";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -40,7 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body className="min-h-full flex flex-col">
-        {children}
+        <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
         <Toaster position="bottom-right" richColors />
       </body>
     </html>

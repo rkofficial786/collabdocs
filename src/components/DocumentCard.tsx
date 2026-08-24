@@ -8,6 +8,7 @@ import { FileText, MoreHorizontal, Trash2, Eye, Pencil, Star } from "lucide-reac
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { useConfirm } from "@/components/ConfirmDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,12 +36,19 @@ export function DocumentCard({
   starred?: boolean;
 }) {
   const router = useRouter();
+  const confirmDialog = useConfirm();
   const [deleting, setDeleting] = useState(false);
   const [starred, setStarred] = useState(!!initialStarred);
   const [starPending, setStarPending] = useState(false);
 
   async function handleDelete() {
-    if (!confirm(`Delete "${title}"? This can't be undone.`)) return;
+    const ok = await confirmDialog({
+      title: `Delete "${title}"?`,
+      description: "This can't be undone.",
+      confirmLabel: "Delete",
+      variant: "destructive",
+    });
+    if (!ok) return;
     setDeleting(true);
     const res = await fetch(`/api/documents/${id}`, { method: "DELETE" });
     if (!res.ok) {
@@ -97,7 +105,7 @@ export function DocumentCard({
               >
                 <MoreHorizontal className="h-4 w-4" />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
                 <DropdownMenuItem
                   onSelect={handleDelete}
                   className="text-[var(--danger)] data-[highlighted]:bg-[var(--danger-soft)]"

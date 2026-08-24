@@ -5,6 +5,7 @@ import { formatDistanceToNow } from "date-fns";
 import { History, Loader2, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { useConfirm } from "@/components/ConfirmDialog";
 import {
   Dialog,
   DialogContent,
@@ -23,6 +24,7 @@ type Version = {
 };
 
 export function VersionHistory({ documentId, editable }: { documentId: string; editable: boolean }) {
+  const confirmDialog = useConfirm();
   const [versions, setVersions] = useState<Version[] | null>(null);
   const [loading, setLoading] = useState(false);
   const [restoringId, setRestoringId] = useState<string | null>(null);
@@ -39,9 +41,12 @@ export function VersionHistory({ documentId, editable }: { documentId: string; e
   }
 
   async function restore(versionId: string) {
-    if (!confirm("Restore this version? Your current content will be saved as a version too, so you can undo this.")) {
-      return;
-    }
+    const ok = await confirmDialog({
+      title: "Restore this version?",
+      description: "Your current content will be saved as a version too, so you can undo this.",
+      confirmLabel: "Restore",
+    });
+    if (!ok) return;
     setRestoringId(versionId);
     const res = await fetch(`/api/documents/${documentId}/versions/${versionId}/restore`, {
       method: "POST",

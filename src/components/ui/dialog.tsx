@@ -48,7 +48,7 @@ export function DialogTitle({
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
-      className={cn("text-lg font-semibold text-[var(--foreground)]", className)}
+      className={cn("break-words text-lg font-semibold text-[var(--foreground)]", className)}
       {...props}
     />
   );
@@ -60,7 +60,7 @@ export function DialogDescription({
 }: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>) {
   return (
     <DialogPrimitive.Description
-      className={cn("text-sm text-[var(--muted)]", className)}
+      className={cn("break-words text-sm text-[var(--muted)]", className)}
       {...props}
     />
   );
