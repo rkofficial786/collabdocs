@@ -17,10 +17,13 @@
 ## What's working end-to-end
 
 - Sign in with any of 3 seeded accounts (alice/bob/carol@demo.com, password `password123`)
-- Create a blank document; rename it; edit with bold/italic/underline/headings/bulleted & numbered lists; autosave with a visible save-status indicator; content persists across reload
+- Persistent sidebar app shell with a searchable document list, plus a `⌘K`/`Ctrl+K` command palette to jump to any document or create a new one from anywhere
+- Create a blank document; rename it; pick an emoji icon for it; star/unstar it
+- Edit with bold/italic/underline/headings/bulleted & numbered lists/quotes — via the top toolbar, a floating selection toolbar, or `/` slash commands; autosave with a visible save-status indicator; live word/character count; content persists across reload
+- Dark mode, toggle persists across sessions
 - Import a `.txt`, `.md`, or `.docx` file as a new document; unsupported types are rejected with a clear error
-- Share a document with another user by email, at **view** or **edit** permission; revoke access; the dashboard visually separates owned vs. shared documents and shows the permission level
-- Viewers get a genuinely read-only editor (no toolbar, disabled title, non-editable content) — enforced server-side on every request, not just hidden in the UI
+- Share a document with another user by email, at **view** or **edit** permission; revoke access; the dashboard visually separates owned vs. shared documents and shows the permission level, with a dedicated "Starred" section
+- Viewers get a genuinely read-only editor (no toolbar, no bubble menu, disabled title, non-editable content) — enforced server-side on every request, not just hidden in the UI
 - Delete a document you own (with confirmation)
 
 ## What's incomplete / intentionally deprioritized

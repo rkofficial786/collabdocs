@@ -35,6 +35,7 @@ export async function getDocumentWithRole(documentId: string, userId: string) {
       shares: {
         include: { user: { select: { id: true, name: true, email: true } } },
       },
+      stars: { where: { userId }, select: { userId: true } },
     },
   });
 

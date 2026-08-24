@@ -49,6 +49,7 @@ export async function PATCH(request: Request, { params }: Params) {
       ...(parsed.data.content !== undefined
         ? { content: parsed.data.content as object }
         : {}),
+      ...(parsed.data.icon !== undefined ? { icon: parsed.data.icon } : {}),
     },
   });
 

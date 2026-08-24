@@ -20,11 +20,18 @@ The login page has one-click buttons for each of these so reviewers don't need t
 ## Features
 
 - **Document creation & editing** — create a blank doc or rename any doc you own, with autosave (debounced, ~700ms after you stop typing) and a save-status indicator.
-- **Rich text formatting** — bold, italic, underline, headings (H1–H3), bulleted and numbered lists, undo/redo. Built on [Tiptap](https://tiptap.dev).
-- **File import** — upload a `.txt`, `.md`/`.markdown`, or `.docx` file and it becomes a new editable document. Unsupported types are rejected with a clear error. 4MB upload limit.
+- **Rich text formatting** — bold, italic, underline, headings (H1–H3), bulleted/numbered lists, blockquotes, undo/redo. Built on [Tiptap](https://tiptap.dev).
+- **Slash commands** — type `/` on an empty-ish line for a Notion-style menu to insert headings, lists, or a quote.
+- **Floating selection toolbar** — select any text to get an inline bold/italic/underline/heading/quote menu, instead of reaching for the top toolbar.
+- **Command palette (⌘K / Ctrl+K)** — jump to any document or create a new one from anywhere in the app without touching the mouse.
+- **Document icons** — pick an emoji per document (Notion-style); it shows in the sidebar, dashboard cards, and command palette.
+- **Starring/favorites** — pin documents you care about; they surface in their own section on the dashboard and sidebar.
+- **Dark mode** — a real second theme (not just inverted colors), toggle persists across sessions.
+- **Persistent sidebar app shell** — every document you own or have access to, searchable, with a mobile-responsive drawer.
+- **File import** — upload a `.txt`, `.md`/`.markdown`, or `.docx` file and it becomes a new editable document, imported through the same schema the editor renders. Unsupported types are rejected with a clear error. 4MB upload limit.
 - **Sharing** — the owner can grant another user (by email) **view** or **edit** access. The dashboard visually separates "My documents" from "Shared with me," and each shared card shows the owner and your permission level.
-- **Persistence** — everything is stored in Postgres (Prisma). Refresh, close the tab, or come back later — your documents, formatting, and sharing are all still there.
-- **Access control** — viewers get a read-only editor (no toolbar, disabled title); only the owner can rename, delete, or manage sharing.
+- **Persistence** — everything is stored in Postgres (Prisma). Refresh, close the tab, or come back later — your documents, formatting, sharing, stars, and icons are all still there.
+- **Access control** — viewers get a genuinely read-only editor (no toolbar, no bubble menu, disabled title); only the owner can rename, delete, or manage sharing. Enforced server-side on every request, not just hidden in the UI.
 
 ## Tech stack
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEditor, EditorContent, type JSONContent } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react/menus";
 import Placeholder from "@tiptap/extension-placeholder";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
@@ -15,8 +16,10 @@ import {
   Heading2,
   Heading3,
   Pilcrow,
+  Quote,
 } from "lucide-react";
 import { tiptapExtensions } from "@/lib/tiptap-extensions";
+import { SlashCommand } from "@/lib/slash-command-extension";
 import { cn } from "@/lib/utils";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
@@ -51,6 +54,33 @@ function ToolbarButton({
   );
 }
 
+function BubbleButton({
+  onClick,
+  active,
+  label,
+  children,
+}: {
+  onClick: () => void;
+  active?: boolean;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className={cn(
+        "flex h-7 w-7 items-center justify-center rounded-md transition-colors",
+        active ? "bg-[var(--accent)] text-white" : "text-white/85 hover:bg-white/15 hover:text-white"
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
 export function Editor({
   documentId,
   initialContent,
@@ -61,6 +91,7 @@ export function Editor({
   editable: boolean;
 }) {
   const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [counts, setCounts] = useState({ words: 0, chars: 0 });
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const latestContent = useRef<JSONContent | null>(null);
 
@@ -83,7 +114,11 @@ export function Editor({
   const editor = useEditor({
     extensions: [
       ...tiptapExtensions,
-      Placeholder.configure({ placeholder: "Start writing…" }),
+      Placeholder.configure({
+        placeholder: ({ node }) =>
+          node.type.name === "heading" ? "Heading" : "Write, or press '/' for commands…",
+      }),
+      ...(editable ? [SlashCommand] : []),
     ],
     content: initialContent,
     editable,
@@ -93,8 +128,20 @@ export function Editor({
         class: "tiptap-content",
       },
     },
+    onCreate: ({ editor }) => {
+      const text = editor.getText();
+      setCounts({
+        words: text.trim() ? text.trim().split(/\s+/).length : 0,
+        chars: text.length,
+      });
+    },
     onUpdate: ({ editor }) => {
       latestContent.current = editor.getJSON();
+      const text = editor.getText();
+      setCounts({
+        words: text.trim() ? text.trim().split(/\s+/).length : 0,
+        chars: text.length,
+      });
       if (saveTimeout.current) clearTimeout(saveTimeout.current);
       saveTimeout.current = setTimeout(persist, 700);
     },
@@ -123,11 +170,42 @@ export function Editor({
   }, [documentId]);
 
   if (!editor) {
-    return <div className="min-h-[60vh] animate-pulse rounded-lg bg-black/5" />;
+    return (
+      <div className="flex flex-col gap-3">
+        <div className="skeleton h-8 w-2/3 rounded-lg" />
+        <div className="skeleton h-4 w-full rounded-lg" />
+        <div className="skeleton h-4 w-5/6 rounded-lg" />
+        <div className="skeleton h-4 w-3/4 rounded-lg" />
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-1 flex-col">
+      {editable && editor && (
+        <BubbleMenu
+          editor={editor}
+          className="flex items-center gap-0.5 rounded-lg bg-[#1c1c1f] p-1 shadow-xl"
+        >
+          <BubbleButton label="Bold" active={editor.isActive("bold")} onClick={() => editor.chain().focus().toggleBold().run()}>
+            <Bold className="h-3.5 w-3.5" />
+          </BubbleButton>
+          <BubbleButton label="Italic" active={editor.isActive("italic")} onClick={() => editor.chain().focus().toggleItalic().run()}>
+            <Italic className="h-3.5 w-3.5" />
+          </BubbleButton>
+          <BubbleButton label="Underline" active={editor.isActive("underline")} onClick={() => editor.chain().focus().toggleUnderline().run()}>
+            <UnderlineIcon className="h-3.5 w-3.5" />
+          </BubbleButton>
+          <div className="mx-0.5 h-4 w-px bg-white/20" />
+          <BubbleButton label="Heading" active={editor.isActive("heading", { level: 2 })} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
+            <Heading2 className="h-3.5 w-3.5" />
+          </BubbleButton>
+          <BubbleButton label="Quote" active={editor.isActive("blockquote")} onClick={() => editor.chain().focus().toggleBlockquote().run()}>
+            <Quote className="h-3.5 w-3.5" />
+          </BubbleButton>
+        </BubbleMenu>
+      )}
+
       {editable && (
         <div className="sticky top-[57px] z-10 -mx-6 mb-4 flex flex-wrap items-center gap-1 border-b border-[var(--border)] bg-[var(--surface)]/95 px-6 py-2 backdrop-blur">
           <ToolbarButton
@@ -216,12 +294,19 @@ export function Editor({
           >
             <ListOrdered className="h-4 w-4" />
           </ToolbarButton>
+          <ToolbarButton
+            label="Quote"
+            onClick={() => editor.chain().focus().toggleBlockquote().run()}
+            active={editor.isActive("blockquote")}
+          >
+            <Quote className="h-4 w-4" />
+          </ToolbarButton>
 
           <div className="ml-auto flex items-center gap-1.5 pl-2 text-xs text-[var(--muted-2)]">
             <span
               className={cn(
                 "h-1.5 w-1.5 rounded-full transition-colors",
-                saveState === "saving" && "bg-amber-400",
+                saveState === "saving" && "bg-amber-400 pulse-dot",
                 saveState === "saved" && "bg-emerald-500",
                 saveState === "error" && "bg-red-500",
                 saveState === "idle" && "bg-transparent"
@@ -234,6 +319,11 @@ export function Editor({
         </div>
       )}
       <EditorContent editor={editor} className="flex-1" />
+      <div className="mt-6 flex items-center gap-3 border-t border-[var(--border)] pt-3 text-xs text-[var(--muted-2)]">
+        <span>{counts.words} words</span>
+        <span>·</span>
+        <span>{counts.chars} characters</span>
+      </div>
     </div>
   );
 }

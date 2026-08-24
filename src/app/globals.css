@@ -16,6 +16,43 @@
   --danger-soft: #fbeaea;
   --ring: #5b5bd6;
   --radius: 0.7rem;
+  --shadow-color: 220 20% 10%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #121214;
+    --surface: #1a1a1e;
+    --foreground: #f0f0f2;
+    --muted: #a3a3ad;
+    --muted-2: #6e6e78;
+    --border: #27272c;
+    --border-strong: #35353c;
+    --accent: #8585f0;
+    --accent-hover: #9d9df5;
+    --accent-soft: #26264a;
+    --accent-foreground: #ffffff;
+    --danger: #e57171;
+    --danger-soft: #3a2222;
+    --ring: #8585f0;
+  }
+}
+
+:root[data-theme="dark"] {
+  --background: #121214;
+  --surface: #1a1a1e;
+  --foreground: #f0f0f2;
+  --muted: #a3a3ad;
+  --muted-2: #6e6e78;
+  --border: #27272c;
+  --border-strong: #35353c;
+  --accent: #8585f0;
+  --accent-hover: #9d9df5;
+  --accent-soft: #26264a;
+  --accent-foreground: #ffffff;
+  --danger: #e57171;
+  --danger-soft: #3a2222;
+  --ring: #8585f0;
 }
 
 @theme inline {
@@ -42,10 +79,60 @@
   border-color: var(--border);
 }
 
+button:not(:disabled),
+[role="button"]:not([data-disabled]),
+summary {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+body,
+body * {
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 2px solid var(--background);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-2);
+  background-clip: padding-box;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+.pulse-dot {
+  animation: pulse-dot 1.1s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--border) 25%, var(--border-strong) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
 }
 
 ::selection {
@@ -143,6 +230,10 @@ body {
 @keyframes dialog-in {
   from { opacity: 0; transform: translate(-50%, -48%) scale(0.97); }
   to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes drawer-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
 }
 @keyframes menu-in {
   from { opacity: 0; transform: translateY(-4px) scale(0.98); }

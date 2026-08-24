@@ -16,19 +16,34 @@ model User {
 
   ownedDocuments Document[]      @relation("OwnedDocuments")
   shares         DocumentShare[]
+  stars          Star[]
 }
 
 model Document {
   id        String   @id @default(cuid())
   title     String
+  icon      String?
   content   Json     @default("{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\"}]}")
   ownerId   String
   owner     User     @relation("OwnedDocuments", fields: [ownerId], references: [id], onDelete: Cascade)
   shares    DocumentShare[]
+  stars     Star[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([ownerId])
+}
+
+model Star {
+  id         String   @id @default(cuid())
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@unique([documentId, userId])
+  @@index([userId])
 }
 
 enum Permission {

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { FilePlus, Upload, Plus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +15,7 @@ import {
 
 const ACCEPTED = ".txt,.md,.markdown,.docx";
 
-export function NewDocumentMenu() {
+export function NewDocumentMenu({ fullWidth }: { fullWidth?: boolean }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
@@ -67,12 +68,12 @@ export function NewDocumentMenu() {
       />
       <DropdownMenu>
         <DropdownMenuTrigger asChild disabled={loading}>
-          <Button disabled={loading}>
+          <Button disabled={loading} className={cn(fullWidth && "w-full justify-start")}>
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-            New
+            New document
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="start">
           <DropdownMenuItem onSelect={createBlank}>
             <FilePlus className="h-4 w-4" />
             Blank document

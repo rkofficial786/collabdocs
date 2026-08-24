@@ -1,11 +1,11 @@
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
-import { ArrowLeft, Eye } from "lucide-react";
+import { Eye } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { getDocumentWithRole } from "@/lib/access";
-import { TopBar } from "@/components/TopBar";
+import { DocumentIcon } from "@/components/DocumentIcon";
 import { DocumentTitle } from "@/components/DocumentTitle";
 import { ShareDialog } from "@/components/ShareDialog";
+import { StarToggle } from "@/components/StarToggle";
 import { Editor } from "@/components/Editor";
 import { Badge } from "@/components/ui/badge";
 import type { JSONContent } from "@tiptap/react";
@@ -20,35 +20,25 @@ export default async function DocumentPage({ params }: PageProps<"/doc/[id]">) {
 
   const { document, role } = result;
   const editable = role !== "view";
+  const starred = document.stars.length > 0;
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <TopBar
-        user={{ name: session.user.name ?? "", email: session.user.email ?? "" }}
-        center={
-          <div className="flex items-center gap-2">
-            <Link
-              href="/"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-[var(--muted)] transition-colors hover:bg-black/5 hover:text-[var(--foreground)]"
-              aria-label="Back to documents"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-            <DocumentTitle documentId={document.id} initialTitle={document.title} editable={editable} />
-            {role === "view" && (
-              <Badge variant="outline">
-                <Eye className="h-3 w-3" /> view only
-              </Badge>
-            )}
-          </div>
-        }
-      />
-
+    <div className="flex min-h-full flex-col">
       <div className="border-b border-[var(--border)] bg-[var(--surface)]">
-        <div className="mx-auto flex max-w-3xl items-center justify-between px-6 py-2.5">
-          <p className="text-xs text-[var(--muted-2)]">
-            {role === "owner" ? "Owned by you" : `Owned by ${document.owner.name}`}
-          </p>
+        <div className="mx-auto flex max-w-3xl items-center gap-3 px-6 py-3 pl-14 md:pl-6">
+          <DocumentIcon documentId={document.id} icon={document.icon} editable={editable} />
+          <div className="min-w-0 flex-1">
+            <DocumentTitle documentId={document.id} initialTitle={document.title} editable={editable} />
+            <p className="px-2 text-xs text-[var(--muted-2)]">
+              {role === "owner" ? "Owned by you" : `Owned by ${document.owner.name}`}
+            </p>
+          </div>
+          {role === "view" && (
+            <Badge variant="outline">
+              <Eye className="h-3 w-3" /> view only
+            </Badge>
+          )}
+          <StarToggle documentId={document.id} starred={starred} />
           {role === "owner" && (
             <ShareDialog
               documentId={document.id}

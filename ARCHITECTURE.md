@@ -30,6 +30,14 @@ Upload → parse to HTML → `generateJSON` (from `@tiptap/html`, which runs ser
 
 All three share one code path into the same `Document.content` shape, so the rest of the app (editor, autosave, sharing) doesn't need to know or care whether a document was typed, imported, or seeded.
 
+## Application shell & interaction layer
+
+Dashboard and editor both live inside an `(app)` route group whose `layout.tsx` does one auth check and one `getUserDocuments` query, then hands the result to a client `AppShell` — a persistent sidebar (searchable document list, starred section, new-document entry point, theme toggle, user menu) plus a `⌘K` command palette wired at the shell level so it's available from any page, not bolted onto each one. This is the difference between "a CRUD page" and "an app": navigation state (which document is active, dark/light theme, the mobile drawer) lives above the page content instead of being re-derived per-route.
+
+Inside the editor itself, three Tiptap pieces work together: a `BubbleMenu` (from `@tiptap/react/menus`) shows a floating format toolbar only when text is selected; a hand-built `SlashCommand` extension (`@tiptap/suggestion` + a small React menu, mounted through Tiptap's Floating UI-based `props.mount()` rather than the old tippy.js pattern) turns `/heading`, `/bulleted list`, etc. into structural inserts; and a live word/character count reads `editor.getText()` on every update. All three are edit-mode only — a viewer gets none of them, consistent with the read-only enforcement described above.
+
+Document icons (an emoji per document, `Document.icon`) and starring (`Star`, a `(documentId, userId)` join table separate from `DocumentShare` because "I starred this" and "I have access to this" are unrelated facts) both round-trip through the same optimistic-update-then-`router.refresh()` pattern already used for rename/delete, so there's one mutation idiom across the app rather than a special case per feature.
+
 ## What I prioritized, and why
 
 Given the 4–6 hour box, I spent the time on the things a reviewer can actually *feel*: an editor that behaves like a real editor (not a `<textarea>` with buttons), a sharing flow with real permission enforcement (not just a UI toggle), and file import that produces genuinely well-formatted documents rather than a wall of unstyled text. I deliberately did **not** build:
