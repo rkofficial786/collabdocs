@@ -5,14 +5,14 @@
 
 ## Included in this folder
 
-- [ ] **Source code** — `collabdocs/` (this project)
+- [x] **Source code** — `collabdocs/` (this project)
 - [x] **README.md** — local setup & run instructions, demo accounts, supported file types (`collabdocs/README.md`)
 - [x] **ARCHITECTURE.md** — architecture note: what was prioritized, key decisions, what's next (`collabdocs/ARCHITECTURE.md`)
 - [x] **AI_WORKFLOW.md** — AI tool usage, what was verified/changed/rejected (`collabdocs/AI_WORKFLOW.md`)
 - [x] **SUBMISSION.md** — this file
-- [ ] **Live product URL** — _add after deploying (see README → Deploying)_
-- [ ] **Walkthrough video URL** — _add a `.txt` file with the Loom/YouTube link_
-- [ ] **Screenshots / demo GIF** — _optional if the live deployment needs no extra setup steps to review_
+- [x] **Live product URL** — https://collabdocs-kohl.vercel.app/
+- [x] **Walkthrough video URL** — `walkthrough-video.txt` → https://drive.google.com/file/d/17wjfCSEoZvuYa7UhDGPN0ihKQGYOK4Af/view?usp=sharing
+- [ ] **Screenshots / demo GIF** — _optional; the live deployment needs no extra setup steps to review, so this can be skipped_
 
 ## What's working end-to-end
 
@@ -29,8 +29,8 @@
 
 ## What's incomplete / intentionally deprioritized
 
-See `ARCHITECTURE.md` → "What I prioritized, and why" for the full reasoning. In short: no real-time multi-cursor collaboration, no comments/suggestions, no version history, no PDF export, no org/roles model beyond per-document sharing. All of these are either explicitly listed as optional stretch in the brief or are large enough features to be their own take-home.
+See `ARCHITECTURE.md` → "What I prioritized, and why" for the full reasoning. In short: no real-time multi-cursor collaboration, no comments/suggestions, no PDF export, no org/roles model beyond per-document sharing. All of these are either explicitly listed as optional stretch in the brief or are large enough features to be their own take-home.
 
 ## What I'd build next with 2–4 more hours
 
-See `ARCHITECTURE.md` → "What I'd build next" (presence + optimistic-lock conflict handling, version history, attachments-as-a-distinct-feature, stricter upload validation).
+See `ARCHITECTURE.md` → "What I'd build next" (presence + optimistic-lock conflict handling, named/diffed versions, attachments-as-a-distinct-feature, stricter upload validation).

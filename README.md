@@ -2,8 +2,8 @@
 
 A lightweight collaborative document editor — create documents, edit them with rich formatting, import files, and share access with other users. Built for the Ajaia Full Stack Product Engineer take-home assignment.
 
-**Live demo:** _add your deployed URL here_
-**Walkthrough video:** _add your Loom/YouTube link here_
+**Live demo:** https://collabdocs-kohl.vercel.app/
+**Walkthrough video:** https://drive.google.com/file/d/17wjfCSEoZvuYa7UhDGPN0ihKQGYOK4Af/view?usp=sharing
 
 ## Demo accounts
 
